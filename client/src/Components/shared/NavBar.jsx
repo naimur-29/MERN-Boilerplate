@@ -43,10 +43,12 @@ const avatarItems = [
 ];
 
 const NavBar = () => {
-  const { toggleDarkMode, darkmode } = UseAuth();
+  const { toggleDarkMode, darkmode, user, logoutFunction } = UseAuth();
 
   const [toggleAvatar, setToggleAvatar] = useState(false);
   const [toggle, setToggle] = useState(false);
+
+  console.log(user);
 
   const handleToggle = () => {
     setToggle(!toggle);
@@ -113,15 +115,6 @@ const NavBar = () => {
                 <span className="absolute -bottom-[.15rem] left-0 w-0 h-[.14rem] bg-blue-400 group-hover:w-full group-hover:transition-all"></span>
               </NavLink>
             ))}
-            {/* notification icon  */}
-            {/* <div className="notificationIcon   ml-2 relative z-[10] ">
-              <MdOutlineNotifications className="text-2xl" />
-              <div className="  absolute inline-flex items-center justify-center w-[1.2rem] h-[1.2rem] text-xs  text-white  border border-white rounded-full -top-1.5 -end-1.5 dark:border-gray-900">
-                8
-              </div>
-            </div> */}
-
-            {/* notification icon  */}
           </div>
           {/* !mobile view  */}
 
@@ -129,60 +122,57 @@ const NavBar = () => {
             {/*  */}
             {/*  */}
 
-            {/* {user ? (
-            <button
-              id="dropdownUserAvatarButton"
-              data-dropdown-toggle="dropdownAvatar"
-              className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-              type="button"
-              onClick={() => setToggleAvatar(!toggleAvatar)}
-            >
-              <span className="sr-only">Open user menu</span>
-              <img
-                className="w-8 h-8 rounded-full "
-                src="/docs/images/people/profile-picture-3.jpg"
-              
-                alt="user photo"
-              />
-            </button>
-          ) : (
-            <Link
-              to={`/login`}
-              className=" hidden md:block bg-gray-600 py-2 px-3 lg:px-4  text-white font-semibold text-xs lg:text-sm "
-            >
-              Log in
-            </Link>
-          )} */}
-
-            <Link
-              to={`/login`}
-              className=" hidden md:block bg-gray-600 py-2 px-3 lg:px-4  text-white font-semibold text-xs lg:text-sm "
-            >
-              Log in
-            </Link>
+            {user ? (
+              <button
+                id="dropdownUserAvatarButton"
+                data-dropdown-toggle="dropdownAvatar"
+                className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                type="button"
+                onClick={() => setToggleAvatar(!toggleAvatar)}
+              >
+                <span className="sr-only">Open user menu</span>
+                <img
+                  className="w-8 h-8 rounded-full "
+                  src="/docs/images/people/profile-picture-3.jpg"
+                  alt="user photo"
+                />
+              </button>
+            ) : (
+              <Link
+                to={`/login`}
+                className=" hidden md:block bg-gray-600 py-2 px-3 lg:px-4  text-white font-semibold text-xs lg:text-sm "
+              >
+                Log in
+              </Link>
+            )}
 
             {/* <!-- Dropdown menu --> */}
 
             {toggleAvatar && (
               <div
                 id="dropdownAvatar"
-                className="z-10 absolute  top-[7rem] lg:top-[7.2rem]  -right-[6rem] md:-right-[2rem] lg:-right-[1.2rem]  transform -translate-x-1/2 -translate-y-1/2  bg-blue-200 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+                className="z-10 absolute  top-[9.3rem] -right-[6rem]  md:-right-[5.6rem]  transform -translate-x-1/2 -translate-y-1/2  bg-blue-200 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
               >
-                {/* <div className="px-4 py-3 text-sm text-gray-900 dark:text-white cursor-pointer">
-                <div> {user?.displayName} </div>
-                <div className="font-medium truncate"> {user?.email} </div>
-              </div> */}
+                <div className="px-4 py-3 text-sm text-gray-900 dark:text-white cursor-pointer">
+                  <div> {user?.displayName} </div>
+                </div>
                 <ul
                   className="py-2 text-sm text-gray-700 dark:text-gray-200"
                   aria-labelledby="dropdownUserAvatarButton"
                 >
-                  <Link
-                    to={"/dashboard"}
-                    className="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    onClick={() => setToggleAvatar(!toggleAvatar)}
-                  >
-                    Avatar menu 1
-                  </Link>
+                  <div className="avatarMenuItems  flex flex-col  ">
+                    {avatarItems &&
+                      avatarItems?.map((avatarMenu, ind) => (
+                        <NavLink
+                          key={ind}
+                          to={avatarMenu.link}
+                          onClick={() => setToggleAvatar(!toggleAvatar)}
+                          className={`   px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white    `}
+                        >
+                          {avatarMenu.item}
+                        </NavLink>
+                      ))}
+                  </div>
                   <li
                     className="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     onClick={() => handleLogout()}

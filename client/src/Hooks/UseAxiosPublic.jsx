@@ -6,7 +6,7 @@ const axiosPublicUrl = axios.create({
 });
 
 const UseAxiosPublic = () => {
-  return [axiosPublicUrl];
+  return axiosPublicUrl;
 };
 
 export default UseAxiosPublic;

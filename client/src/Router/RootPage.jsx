@@ -4,7 +4,7 @@ import NavBar from "../Components/shared/NavBar";
 
 const RootPage = () => {
   return (
-    <div className="rootPageContainer">
+    <div className="rootPageContainer  ">
       {/* nav container starts  */}
       <div className="navContainer  ">
         <NavBar />
@@ -16,7 +16,7 @@ const RootPage = () => {
       </div>
 
       {/* footer container  */}
-      <div className="footerContainer bg-sky-300  ">
+      <div className="footerContainer bg-sky-500  ">
         <h1>footer container </h1>
         <h1>footer container </h1>
         <h1>footer container </h1>
