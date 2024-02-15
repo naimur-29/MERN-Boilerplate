@@ -11,16 +11,32 @@ const TodoSchema = new Schema({
   },
   state: {
     type: Boolean,
-    required: true,
+    default: false,
   },
 });
 
-const TodoResponseDefault = (todo) => {
-  return {
-    context: todo.context,
-    state: todo.state,
-    id: todo.id,
-  };
+// responses:
+const TodoResponses = {
+  onAdd(todo) {
+    // if list of items:
+    if (todo instanceof Array) {
+      const res = [];
+      for (const ele of todo)
+        res.push({
+          id: ele.id,
+          context: ele.context,
+          state: ele.state,
+        });
+      return res;
+    }
+
+    // one item:
+    return {
+      id: todo.id,
+      context: todo.context,
+      state: todo.state,
+    };
+  },
 };
 
-module.exports = { TodoSchema, TodoResponseDefault };
+module.exports = { TodoSchema, TodoResponses };

@@ -1,19 +1,51 @@
-import { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from "react";
+import { useQuery, useMutation } from "react-query";
+import axios from "axios";
+
+// query functions:
+const fetchTodosQ = async () => {
+  const response = await axios.get("http://localhost:8000/api/todo");
+  return response.data;
+};
 
 export default function Todo() {
   // states:
   const [userInput, setUserInput] = useState("");
-  const [todos, setTodos] = useState([]);
+
+  // React Queries:
+  const fetchTodos = useQuery("fetchTodos", fetchTodosQ);
+  const addTodo = useMutation((todo) =>
+    axios.post("http://localhost:8000/api/todo", todo)
+  );
+  const deleteTodo = useMutation((todoId) =>
+    axios.delete(`http://localhost:8000/api/todo/${todoId}`)
+  );
+  const updateTodo = useMutation((info) =>
+    axios.put(`http://localhost:8000/api/todo/${info.id}`, info.updatedData)
+  );
 
   // handle functions:
   const handleAddTodo = () => {
     if (userInput.trim().length <= 0) return;
-    setTodos((prev) => [...prev, { context: userInput.trim(), state: false }]);
+    addTodo.mutate({
+      id:
+        fetchTodos.data.data.length < 1
+          ? 1
+          : fetchTodos.data.data[fetchTodos.data.data.length - 1].id + 1,
+      context: userInput.trim(),
+    });
     setUserInput("");
   };
 
+  // use effects:
+  useEffect(() => {
+    fetchTodos.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addTodo.isLoading, deleteTodo.isLoading, updateTodo.isLoading]);
+
   return (
-    <section className="todo-page-container flex flex-col items-center h-screen p-4">
+    <section className="flex flex-col items-center h-screen p-4 todo-page-container">
       {/* Add Todo */}
       <div className="add-todo-container p-2 bg-yellow-600 w-full max-w-[720px] flex items-center justify-between gap-2 mb-[12px] rounded-md cursor-pointer">
         <input
@@ -26,18 +58,29 @@ export default function Todo() {
           }}
         />
         <button
-          className="text-yellow-100 font-bold text-2xl uppercase outline-yellow-100"
+          className="text-2xl font-bold text-yellow-100 uppercase outline-yellow-100"
           onClick={handleAddTodo}
         >
-          Add
+          {addTodo.isLoading
+            ? "Loading..."
+            : deleteTodo.isLoading
+            ? "Deleting..."
+            : updateTodo.isLoading
+            ? "Updating..."
+            : "Add"}
         </button>
       </div>
       {/* Add Todo */}
 
       {/* Render Todo(s) */}
       <div className="display-todo-container w-full max-w-[720px] p-2 flex flex-col gap-1 cursor-pointer">
-        {todos.map((ele, index) => (
-          <TodoItem key={index} index={index} value={ele} setTodos={setTodos} />
+        {fetchTodos.data?.data?.map((ele, index) => (
+          <TodoItem
+            key={index}
+            value={ele}
+            deleteTodo={deleteTodo}
+            updateTodo={updateTodo}
+          />
         ))}
       </div>
       {/* Render Todo(s) */}
@@ -46,65 +89,34 @@ export default function Todo() {
 }
 
 // eslint-disable-next-line react/prop-types
-const TodoItem = ({ index, value, setTodos }) => {
+const TodoItem = ({ value, deleteTodo, updateTodo }) => {
   return (
     <div className="todo-container bg-yellow-200 p-1 px-2 text-lg flex items-start justify-between border-[3px] border-yellow-500">
       <p className="w-[80vw] break-words h-full flex items-center">
-        {/* eslint-disable-next-line react/prop-types */}
         {value.context}
       </p>
 
-      <div className="buttons-container flex items-center gap-2 select-none">
+      <div className="flex items-center gap-2 select-none buttons-container">
         <div
           className={`circle w-[1.7rem] aspect-square border-[3px] rounded-full active:scale-90 transition-[background-color] duration-300 ${
-            // eslint-disable-next-line react/prop-types
             value.state
               ? "bg-green-300 border-green-500"
               : "bg-yellow-50 border-yellow-500"
           }`}
           onClick={() => {
-            console.log("hello clicked!");
-            setTodos((prev) => {
-              const res = [...prev];
-              res[index] = {
-                ...prev[index],
-                state: !prev[index].state,
-              };
-              return res;
+            updateTodo.mutate({
+              id: value.id,
+              updatedData: {
+                state: !value.state,
+              },
             });
           }}
         ></div>
 
         <div
-          className={`circle w-[1.7rem] aspect-square flex items-center justify-center text-3xl text-blue-400 font-bold active:scale-90`}
-          onClick={() => {
-            console.log("hello clicked!");
-            setTodos((prev) => {
-              const res = [...prev];
-
-              if (index > 0) {
-                const prevIndex = index - 1;
-                [res[index], res[prevIndex]] = [res[prevIndex], res[index]];
-                return res;
-              }
-
-              res.push(res.shift());
-              return res;
-            });
-          }}
-        >
-          ^
-        </div>
-
-        <div
           className={`circle w-[1.7rem] aspect-square flex items-center justify-center text-3xl text-red-400 font-bold active:scale-90`}
           onClick={() => {
-            console.log("hello clicked!");
-            setTodos((prev) => {
-              const res = [...prev];
-              res.splice(index, 1);
-              return res;
-            });
+            deleteTodo.mutate(value.id);
           }}
         >
           X

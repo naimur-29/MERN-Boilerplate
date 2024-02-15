@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 
 // local imports:
 const { connectDb } = require("./services/db");
@@ -13,6 +14,14 @@ const PORT = process.env.PORT || 8000;
 connectDb();
 
 app.use(express.json());
+
+// Enable CORS:
+const corsOptions = {
+  origin: "*",
+  methods: "*",
+  allowedHeaders: "*",
+};
+app.use(cors(corsOptions));
 
 // add routers:
 app.use("/api/todo", todoRouter);
