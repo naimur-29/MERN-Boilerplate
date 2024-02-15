@@ -4,6 +4,7 @@ import Todo from "../pages/Todo";
 import Error from "../pages/Error";
 import RootPage from "./RootPage";
 import Login from "../pages/Login";
+import Register from "../pages/Register";
 
 export const PageRouter = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ export const PageRouter = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
       },
       {
         path: "/todo",
