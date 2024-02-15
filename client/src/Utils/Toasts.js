@@ -81,3 +81,15 @@ export const errorlogin = () =>
     progress: undefined,
     theme: "colored",
   });
+
+export const logoutSuccessFully = () =>
+  toast.success(" Logout successfully ", {
+    position: "top-center",
+    autoClose: 1200,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+  });

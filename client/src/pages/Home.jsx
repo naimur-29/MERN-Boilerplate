@@ -10,13 +10,12 @@ export default function Home() {
 
   // console.log(state);
   return (
-    <section className="home-page-container h-screen flex justify-center items-center ">
-      <Link to="todo" className="title text-3xl">
-        Let&apos;s visit todo page!
-      </Link>
-      <h1>monir</h1>
-      <h1>monir</h1>
-      <h1>monir</h1>
-    </section>
+    <div className="homePageContainer bg-lime-300    ">
+      <h1>home page </h1>
+      <h1>home page </h1>
+      <h1>home page </h1>
+      <h1>home page </h1>
+      <h1>home page </h1>
+    </div>
   );
 }

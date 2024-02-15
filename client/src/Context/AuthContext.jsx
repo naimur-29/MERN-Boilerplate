@@ -14,6 +14,7 @@ const AppProvider = ({ children }) => {
   const [test, setTest] = useState("test in auth ");
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [darkmode, setDarkmode] = useState(false);
 
   //   register function
   const registerFunction = (email, password) => {
@@ -55,6 +56,7 @@ const AppProvider = ({ children }) => {
     loginFunction,
     logoutFunction,
     toggleDarkMode,
+    darkmode,
   };
 
   return (
